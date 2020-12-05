@@ -9,7 +9,7 @@ var (
 type User struct {
 	Id int64
 	Uid int64
-	Username string
+	DeviceId string
 	Password string
 	NikeName  string
 	RegFrom string

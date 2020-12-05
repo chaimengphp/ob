@@ -2,20 +2,14 @@ package controllers
 
 import (
 	"github.com/astaxie/beego/client/orm"
-	beego "github.com/astaxie/beego/server/web"
 	"math"
 	"obapi/Tools"
 	"obapi/models"
 )
 type IndexController struct {
-	beego.Controller
+	BaseController
 }
 
-type reponseJson struct {
-	Code int64 `json:"code"`
-	Message string `json:"message"`
-	Result interface{} `json:"result"`
-}
 
 //信息数据块结构
 type indexItemData struct {
@@ -72,11 +66,7 @@ func (this *IndexController) Index() {
 			TotalPage:int(math.Ceil(float64(total/10))),
 			List:listData,
 		}
-		reponseJson := reponseJson{
-			0,"suss",indexList,
-		}
-		this.Data["json"] = reponseJson
-		this.ServeJSON()
+		this.ResponseData(0,"suss",indexList)
 	}
 
 

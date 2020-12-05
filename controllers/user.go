@@ -1,13 +1,12 @@
 package controllers
 
 import (
-	beego "github.com/astaxie/beego/server/web"
 	"obapi/models"
 )
 
 // Operations about Users
 type UserController struct {
-	beego.Controller
+	BaseController
 }
 
 func (u *UserController) Login() {
