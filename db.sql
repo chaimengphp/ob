@@ -16,7 +16,9 @@ CREATE TABLE `ob_user_content` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` int(10) unsigned NOT NULL COMMENT '用户uid',
   `content` tinytext CHARACTER SET utf8mb4 NOT NULL COMMENT '发表内容',
-  `imglist` tinytext COMMENT '图片列表',
+  `img_list` tinytext COMMENT '图片列表',
+  `video_url` varchar(255) NOT NULL default '' COMMENT '短视频地址',
+  `addr` varchar(50) NOT NULL default '' COMMENT '地理位置',
   `pubtime` int(10) unsigned NOT NULL COMMENT '发布时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;

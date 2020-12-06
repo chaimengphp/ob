@@ -10,6 +10,7 @@ type BaseController struct {
 	beego.Controller
 }
 
+
 func (b *BaseController) getUid() int64 {
 	var r *http.Request
 	uid := r.Header.Get("uid")
@@ -19,6 +20,11 @@ func (b *BaseController) getUid() int64 {
 
 
 func (b *BaseController) ResponseData(code int64,message string,Result interface{}) {
+	type ReponseJson struct {
+		Code int64
+		Message string
+		Result interface{}
+	}
 	reponseJson := ReponseJson{
 		Code:0,Message:"suss",Result:Result,
 	}

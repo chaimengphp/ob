@@ -7,13 +7,13 @@ var (
 )
 
 type Pet struct {
-	Id int64
-	UserId int64
-	HeadImg string
-	PetName string
-	PetType  string
-	PetAge int64
-	PetSex string
+	Id int64 `json:"id"`
+	UserId int64 `json:"user_id"`
+	HeadImg string `json:"head_img"`
+	PetName string `json:"pet_name"`
+	PetType  string `json:"pet_type"`
+	PetAge int64 `json:"pet_age"`
+	PetSex string `json:"pet_sex"`
 	User *User `orm:"rel(fk)"`
 }
 
