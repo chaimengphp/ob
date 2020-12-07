@@ -15,7 +15,7 @@ func (p *PetController) AddPet() {
 	pet_name := p.GetString("pet_name","")
 	pet_type := p.GetString("pet_type","")
 	pet_age,_ := p.GetInt64("pet_age",0)
-	pet_sex := p.GetString("","")
+	pet_sex := p.GetString("pet_sex","")
 	pet := new(models.Pet)
 	user_id := p.getUid()
 	if(user_id <= 0) {

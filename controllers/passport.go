@@ -42,7 +42,7 @@ func (p *PassportController) OauthLogin() {
 func (p *PassportController) Upinfo() {
 	nike_name := p.GetString("nikename","")
 	summary := p.GetString("summary","")
-	file := p.GetString("file","")
+	file := p.GetString("head_img","")
 	if file == "" && nike_name == "" && summary == "" {
 		p.ResponseData(1,"数据无改动",nil)
 	}

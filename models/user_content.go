@@ -9,7 +9,10 @@ func init() {
 type UserContent struct {
 	Id int64 `json:"id"`
 	Content string `json:"content"`
-	Imglist string `json:"imglist"`
+	UserId int64 `json:"user_id"`
+	Imglist string `json:"img_list"`
+	VideoUrl string `json:"video_url"`
+	Addr string `json:"addr"`
 	Pubtime int64 `json:"pubtime"`
 	User *User `orm:"rel(fk)"`
 

@@ -16,7 +16,8 @@ type indexItemData struct {
 	Id int64 `json:"id"`
 	Content string `json:"content"`
 	Imglist []string `json:"imglist"`
-	Pubtime string `json:"pubtime"`
+	DateFormat string `json:"date_format"`
+	TimeFormat string `json:"time_format"`
 }
 
 //用户块数据结构
@@ -52,7 +53,8 @@ func (this *IndexController) Index() {
 					Id:data.Id,
 					Content:data.Content,
 					Imglist:Tools.HandelHeadImg(data.Imglist),
-					Pubtime:Tools.DateFormat(data.Pubtime),
+					DateFormat:Tools.YmDateFormat(data.Pubtime),
+					TimeFormat:Tools.MdTimeFormat(data.Pubtime),
 				},
 				User:indexItemUser{
 					Uid:data.User.Id,

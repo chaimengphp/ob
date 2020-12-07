@@ -27,7 +27,7 @@ func UpImg(imgBase64 string) (imgpath string,err error) {
 
 	//定义图片目录
 	dir := "D:/go/goWork/src/obapi/image/"
-	img_path := timenow.Format("20060102")+strconv.FormatInt(timenow.Unix(), 10)+".jpg"
+	img_path := timenow.Format("20060102")+"/"+strconv.FormatInt(timenow.Unix(), 10)+".jpg"
 	save_path := dir+img_path
 	file, err := os.OpenFile(save_path, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
