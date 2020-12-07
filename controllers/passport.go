@@ -1,7 +1,10 @@
 package controllers
 
 import (
+	"encoding/base64"
 	"github.com/astaxie/beego/client/orm"
+	"io/ioutil"
+	"net/http"
 	"obapi/models"
 	"obapi/Tools"
 )
@@ -12,6 +15,27 @@ type PassportController struct {
 
 //第三方登录
 func (p *PassportController) OauthLogin() {
+	reg_from := p.GetString("reg_from","")
+	nick_name := p.GetString("nickname","")
+	head_img := p.GetString("headimgurl","")
+	unionid := p.GetString("unionid","")
+	if nick_name == "" || head_img == "" || unionid == "" {
+		p.ResponseData(1,"参数异常",nil)
+	}
+	res,err := http.Get(head_img)
+	if err !=nil {
+		p.ResponseData(1,"图片读取失败",nil)
+	}
+	defer res.Body.Close()
+	img_data,_ := ioutil.ReadAll(res.Body)
+	imageBase64 := base64.StdEncoding.EncodeToString(img_data)
+	img_path,err := Tools.UpImg(imageBase64)
+	if err != nil {
+		p.ResponseData(1,"头像上传失败",nil)
+	}
+	user := &models.User{
+
+	}
 
 }
 

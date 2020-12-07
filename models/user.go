@@ -8,15 +8,15 @@ var (
 
 type User struct {
 	Id int64
-	Uid int64
 	DeviceId string
 	Password string
 	NikeName  string
-	RegFrom string
-	RegTime string
-	LoginTime int64
 	HeadImg string
 	Summary string
+	RegFrom string
+	Unionid string
+	RegTime string
+	LoginTime int64
 	UserContents []*UserContent `orm:"reverse(many)"`
 }
 

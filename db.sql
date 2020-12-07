@@ -1,13 +1,14 @@
 CREATE TABLE `ob_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `device_id` varchar(30) NOT NULL COMMENT '登录设备',
-  `password` varchar(30) NOT NULL COMMENT '登录密码',
+  `password` varchar(30) default '' COMMENT '登录密码',
   `nike_name` varchar(50) NOT NULL COMMENT '昵称',
-  `reg_from` varchar(20) NOT NULL COMMENT '注册来源',
-  `reg_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '注册时间',
-  `login_time` int(11) DEFAULT '0' COMMENT '登录时间',
   `head_img` varchar(150) NOT NULL COMMENT '头像地址',
-  `summary` varchar(250) DEFAULT NULL COMMENT '个性签名',
+  `summary` varchar(250) DEFAULT '' COMMENT '个性签名',
+  `reg_from` varchar(20) NOT NULL COMMENT '注册来源(wx,qq)',
+  `unionid` varchar(20) defalut '' COMMENT 'wx用户统一标识',
+  `reg_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '注册时间',
+  `login_time` int(11) DEFAULT '0' COMMENT '登录时间'
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=100000 DEFAULT CHARSET=utf8;
 
