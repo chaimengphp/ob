@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"obapi/models"
 	"obapi/Tools"
+	"time"
 )
 
 type PassportController struct {
@@ -18,10 +19,11 @@ func (p *PassportController) OauthLogin() {
 	reg_from := p.GetString("reg_from","")
 	nick_name := p.GetString("nickname","")
 	head_img := p.GetString("headimgurl","")
-	unionid := p.GetString("unionid","")
-	if nick_name == "" || head_img == "" || unionid == "" {
+	oauth_uid := p.GetString("oauth_uid","")
+	if nick_name == "" || head_img == "" || oauth_uid == "" {
 		p.ResponseData(1,"参数异常",nil)
 	}
+
 	res,err := http.Get(head_img)
 	if err !=nil {
 		p.ResponseData(1,"图片读取失败",nil)
@@ -34,9 +36,39 @@ func (p *PassportController) OauthLogin() {
 		p.ResponseData(1,"头像上传失败",nil)
 	}
 	user := &models.User{
-
+		DeviceId:p.GetDeviceId(),
+		NikeName:nick_name,
+		HeadImg:img_path,
+		RegFrom:reg_from,
+		OauthUid:oauth_uid,
+		RegTime:time.Now().Unix(),
+		LoginTime:time.Now().Unix(),
 	}
+	o := orm.NewOrm()
+	user_info := p.GetOauthOne(reg_from,oauth_uid)
+	if user_info !=nil {
+		user.Id = user_info.Id
+		_,errs := o.Update(&user)
+		if errs != nil {
+			p.ResponseData(1,"登录异常",nil)
+		}
+	}else{
+		num,errs := o.Insert(&user)
+		user.Id = num
+		if errs != nil {
+			p.ResponseData(1,"登录异常",nil)
+		}
+	}
+	p.ResponseData(0,"登录成功",user)
+}
 
+func (p *PassportController) GetOauthOne(reg_form string,oauth_uid string) (info *models.User) {
+	user := &models.User{RegFrom:reg_form,OauthUid:oauth_uid}
+	o := orm.NewOrm()
+	if err := o.Read(&user); err != nil {
+		return nil
+	}
+	return user
 }
 
 func (p *PassportController) Upinfo() {

@@ -6,7 +6,7 @@ CREATE TABLE `ob_user` (
   `head_img` varchar(150) NOT NULL COMMENT '头像地址',
   `summary` varchar(250) DEFAULT '' COMMENT '个性签名',
   `reg_from` varchar(20) NOT NULL COMMENT '注册来源(wx,qq)',
-  `unionid` varchar(20) defalut '' COMMENT 'wx用户统一标识',
+  `oauth_uid` varchar(20) defalut '' COMMENT '用户统一标识',
   `reg_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '注册时间',
   `login_time` int(11) DEFAULT '0' COMMENT '登录时间'
   PRIMARY KEY (`id`)

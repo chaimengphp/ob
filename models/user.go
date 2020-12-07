@@ -14,8 +14,8 @@ type User struct {
 	HeadImg string
 	Summary string
 	RegFrom string
-	Unionid string
-	RegTime string
+	OauthUid string
+	RegTime int64
 	LoginTime int64
 	UserContents []*UserContent `orm:"reverse(many)"`
 }

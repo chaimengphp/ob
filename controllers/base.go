@@ -11,11 +11,17 @@ type BaseController struct {
 }
 
 
-func (b *BaseController) getUid() int64 {
+func (b *BaseController) GetUid() int64 {
 	var r *http.Request
 	uid := r.Header.Get("uid")
 	user_id,_ := strconv.Atoi(uid)
 	return int64(user_id)
+}
+
+func (b *BaseController) GetDeviceId() string {
+	var r *http.Request
+	device_id := r.Header.Get("device_id")
+	return device_id
 }
 
 
