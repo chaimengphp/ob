@@ -14,9 +14,10 @@ type UserContentController struct {
 }
 //发布内容
 func (uc *UserContentController) PubContent() {
-	content := uc.GetString("content","")
+	content := uc.GetString("textcontent","")
 	img_list := uc.GetStrings("imglist")
-	video_url := uc.GetString("imglist","")
+	video_url := uc.GetString("video_name","")
+	addr := uc.GetString("addr","")
 	if(content == "" && video_url == "" && len(img_list) <=0) {
 		uc.ResponseData(1,"数据异常",nil)
 	}
@@ -32,7 +33,8 @@ func (uc *UserContentController) PubContent() {
 		user_content.Imglist = string(jdata)
 	}
 	user_content.Pubtime = time.Now().Unix()
-	user_content.UserId = uc.getUid()
+	user_content.UserId = uc.GetUid()
+	user_content.Addr = addr
 	o := orm.NewOrm()
 	if num,err := o.Insert(&user_content);err ==nil && num>0 {
 		uc.ResponseData(0,"suss",user_content)
@@ -61,7 +63,7 @@ func (uc *UserContentController) Detail() {
 //删除内容
 func (uc *UserContentController) Del() {
 	id,_ := uc.GetInt64("id",0)
-	uid  := uc.getUid()
+	uid  := uc.GetUid()
 	if id <=0 || uid <=0 {
 		uc.ResponseData(1,"数据异常",nil)
 	}
@@ -78,7 +80,7 @@ func (uc *UserContentController) Del() {
 
 //上传图像
 func (uc *UserContentController) UploadImg() {
-	img := uc.GetString("img","")
+	img := uc.GetString("imgcontent","")
 	if img == "" {
 		uc.ResponseData(1,"",nil)
 	}
@@ -88,7 +90,7 @@ func (uc *UserContentController) UploadImg() {
 	}
 	if head_img_path!="" {
 		uc.ResponseData(0,"suss", struct {
-			ImgPath string
+			ImgPath string `json:"img_path"`
 		}{ImgPath:head_img_path})
 	}else{
 		uc.ResponseData(1,"图片上传异常",nil)

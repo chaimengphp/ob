@@ -23,7 +23,9 @@ func (p *PassportController) OauthLogin() {
 	if nick_name == "" || head_img == "" || oauth_uid == "" {
 		p.ResponseData(1,"参数异常",nil)
 	}
-
+	if is_intval := Tools.In_array(reg_from,[]string{"wx","qq"});is_intval == false {
+		p.ResponseData(1,"来源错误",nick_name)
+	}
 	res,err := http.Get(head_img)
 	if err !=nil {
 		p.ResponseData(1,"图片读取失败",nil)
@@ -84,7 +86,7 @@ func (p *PassportController) Upinfo() {
 		if err != nil {
 			p.ResponseData(1,"头像上传失败",nil)
 		}
-		user.HeadImg = img_pth;
+		user.HeadImg = img_pth
 	}
 
 	if nike_name != "" {

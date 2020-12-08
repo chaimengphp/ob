@@ -7,16 +7,16 @@ var (
 )
 
 type User struct {
-	Id int64
-	DeviceId string
-	Password string
-	NikeName  string
-	HeadImg string
-	Summary string
-	RegFrom string
-	OauthUid string
-	RegTime int64
-	LoginTime int64
+	Id int64 `json:"uid"`
+	DeviceId string `json:"device_id"`
+	Password string `json:"password"`
+	NikeName  string `json:"nike_name"`
+	HeadImg string `json:"head_img"`
+	Summary string `json:"summary"`
+	RegFrom string `json:"reg_from"`
+	OauthUid string `json:"oauth_uid"`
+	RegTime int64 `json:"reg_time"`
+	LoginTime int64 `json:"login_time"`
 	UserContents []*UserContent `orm:"reverse(many)"`
 }
 
