@@ -15,12 +15,23 @@ type UserContentController struct {
 //发布内容
 func (uc *UserContentController) PubContent() {
 	content := uc.GetString("textcontent","")
-	img_list := uc.GetStrings("imglist")
+	img_content_list := uc.GetStrings("imglist")
 	video_url := uc.GetString("video_name","")
 	addr := uc.GetString("addr","")
-	if(content == "" && video_url == "" && len(img_list) <=0) {
+	pubtime := uc.GetString("pubtime","")
+
+	if(content == "" && video_url == "" && len(img_content_list) <=0) {
 		uc.ResponseData(1,"数据异常",nil)
 	}
+	//上传图片
+	var img_list []string
+	for _,imgcontent := range img_content_list {
+		img_path,err := Tools.UpImg(imgcontent)
+		if err == nil {
+			img_list = append(img_list,img_path)
+		}
+	}
+
 	user_content := new(models.UserContent)
 	if(content != "") {
 		user_content.Content = content
@@ -30,18 +41,45 @@ func (uc *UserContentController) PubContent() {
 	}
 	if(len(img_list) > 0) {
 		jdata,_ := json.Marshal(img_list)
-		user_content.Imglist = string(jdata)
+		user_content.ImgList = string(jdata)
 	}
-	user_content.Pubtime = time.Now().Unix()
-	user_content.UserId = uc.GetUid()
+	var Pubtime_stamp int64
+	if pubtime == "" {
+		Pubtime_stamp = time.Now().Unix()
+	}else{
+		tm,_ := time.Parse("2006-01-02 15:04:05",pubtime)
+		Pubtime_stamp = tm.Unix()
+	}
+	user := models.User{Id:uc.GetUid()}
+	user_content.Pubtime = Pubtime_stamp
+	user_content.User = &user
 	user_content.Addr = addr
+	//fmt.Println(user_content)
+	//return
 	o := orm.NewOrm()
-	if num,err := o.Insert(&user_content);err ==nil && num>0 {
-		uc.ResponseData(0,"suss",user_content)
+	if num,err := o.Insert(user_content);err ==nil && num>0 {
+		item := &ImgTextItem{
+			IShowTpl:"imgtext_tpl",
+			Data:Content{Content:itemContent{
+				Id:user_content.Id,
+				Content:user_content.Content,
+				Imglist:Tools.HandelHeadImg(user_content.ImgList),
+				DateFormat:Tools.DFormat(user_content.Pubtime),
+			}},
+		}
+		uc.ResponseData(0,"suss",item)
 	}else{
 		uc.ResponseData(1,"发布失败",nil)
 	}
 
+}
+
+type DetailShowData struct {
+	Id int64 `json:"id"`
+	Content string `json:"content"`
+	ImgList []string `json:"img_list"`
+	Addr string `json:"addr"`
+	DateFormat string `json:"date_format"`
 }
 
 func (uc *UserContentController) Detail() {
@@ -53,11 +91,20 @@ func (uc *UserContentController) Detail() {
 	o := orm.NewOrm()
 	user_content_info := models.UserContent{}
 	qs := o.QueryTable(new(models.UserContent))
-	err := qs.Filter("id",id).One(&user_content_info,"id","content","imglist")
+	err := qs.Filter("id",id).One(&user_content_info,"id","content","imglist","pubtime")
 	if err == orm.ErrNoRows {
 		uc.ResponseData(1,"内容不存在",nil)
 	}
-	uc.ResponseData(0,"suss",user_content_info)
+	img_list := Tools.HandelHeadImg(user_content_info.ImgList)
+	show_data := DetailShowData{
+		Id:user_content_info.Id,
+		Content:user_content_info.Content,
+		ImgList:img_list,
+		Addr:user_content_info.Addr,
+		DateFormat:Tools.DFormat(user_content_info.Pubtime),
+
+	}
+	uc.ResponseData(0,"suss",show_data)
 }
 
 //删除内容
@@ -67,13 +114,14 @@ func (uc *UserContentController) Del() {
 	if id <=0 || uid <=0 {
 		uc.ResponseData(1,"数据异常",nil)
 	}
+	user := &models.User{Id:uid}
 	user_content := models.UserContent{
-		Id:id,UserId:uid,
+		Id:id,User:user,
 	}
 	o := orm.NewOrm()
-	if num,err := o.Delete(&user_content);err == nil && num <=0 {
+	if num,err := o.Delete(&user_content);err != nil || num <= 0 {
 		uc.ResponseData(1,"删除失败",nil)
-	}else {
+	}else if num > 0{
 		uc.ResponseData(0,"suss",nil)
 	}
 }
@@ -81,12 +129,13 @@ func (uc *UserContentController) Del() {
 //上传图像
 func (uc *UserContentController) UploadImg() {
 	img := uc.GetString("imgcontent","")
+
 	if img == "" {
-		uc.ResponseData(1,"",nil)
+		uc.ResponseData(1,"请选择上传图片",nil)
 	}
 	head_img_path,err := Tools.UpImg(img)
 	if(err != nil) {
-		uc.ResponseData(1,"上传失败",nil)
+		uc.ResponseData(1,err.Error(),nil)
 	}
 	if head_img_path!="" {
 		uc.ResponseData(0,"suss", struct {

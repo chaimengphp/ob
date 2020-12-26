@@ -12,10 +12,13 @@ type BaseController struct {
 
 
 func (b *BaseController) GetUid() int64 {
-	var r *http.Request
-	uid := r.Header.Get("uid")
-	user_id,_ := strconv.Atoi(uid)
-	return int64(user_id)
+	uid := b.Ctx.Request.Header.Get("uid")
+	var user_id int64
+	if uid != "" {
+		userid,_ := strconv.Atoi(uid)
+		user_id = int64(userid)
+	}
+	return user_id
 }
 
 func (b *BaseController) GetDeviceId() string {
@@ -27,12 +30,12 @@ func (b *BaseController) GetDeviceId() string {
 
 func (b *BaseController) ResponseData(code int64,message string,Result interface{}) {
 	type ReponseJson struct {
-		Code int64
-		Message string
-		Result interface{}
+		Code int64 `json:"code"`
+		Message string `json:"message"`
+		Result interface{} `json:"result"`
 	}
 	reponseJson := ReponseJson{
-		Code:0,Message:"suss",Result:Result,
+		Code:code,Message:message,Result:Result,
 	}
 	b.Data["json"] = reponseJson
 	b.ServeJSON()

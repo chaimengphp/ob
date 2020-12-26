@@ -9,8 +9,8 @@ func init() {
 type UserContent struct {
 	Id int64 `json:"id"`
 	Content string `json:"content"`
-	UserId int64 `json:"user_id"`
-	Imglist string `json:"img_list"`
+	//UId int64 `json:"uid"`
+	ImgList string `json:"img_list"`
 	VideoUrl string `json:"video_url"`
 	Addr string `json:"addr"`
 	Pubtime int64 `json:"pubtime"`

@@ -5,16 +5,28 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"strconv"
 	"time"
 )
 
-//图片处理
-func HandelHeadImg(headimg string) []string {
+//json图片处理
+func HandelHeadImg(img string) []string {
 	var img_list []string
-	json.Unmarshal([]byte(headimg),&img_list)
-	return img_list
+	json.Unmarshal([]byte(img),&img_list)
+	var img_list_domain []string
+	for _,img := range img_list {
+		img_url := fmt.Sprintf("https://img.com/%s",img)
+		img_list_domain = append(img_list_domain,img_url)
+	}
+	return img_list_domain
+}
+
+//单张图片处理
+func HandelImg(img string) string {
+	img_url := fmt.Sprintf("https://img.com/%s",img)
+	return img_url
 }
 
 //图片上传
@@ -26,8 +38,11 @@ func UpImg(imgBase64 string) (imgpath string,err error) {
 	timenow := time.Now()
 
 	//定义图片目录
-	dir := "D:/go/goWork/src/obapi/image/"
-	img_path := timenow.Format("20060102")+"/"+strconv.FormatInt(timenow.Unix(), 10)+".jpg"
+	dir := "D:/go/goWork/src/obapi/image/"+timenow.Format("20060102")
+	if _,err := os.Stat(dir);err !=nil {
+		os.MkdirAll(dir,0777)
+	}
+	img_path := "/"+strconv.FormatInt(timenow.Unix(), 10)+".jpg"
 	save_path := dir+img_path
 	file, err := os.OpenFile(save_path, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
@@ -40,5 +55,5 @@ func UpImg(imgBase64 string) (imgpath string,err error) {
 		return "",errors.New("write error")
 	}
 	w.Flush()
-	return img_path,nil
+	return timenow.Format("20060102")+img_path,nil
 }

@@ -12,12 +12,13 @@ type IndexController struct {
 
 
 //信息数据块结构
-type indexItemData struct {
+type itemContent struct {
 	Id int64 `json:"id"`
+	Type string `json:"type"`
 	Content string `json:"content"`
+	Video string `json:"video"`
 	Imglist []string `json:"imglist"`
 	DateFormat string `json:"date_format"`
-	TimeFormat string `json:"time_format"`
 }
 
 //用户块数据结构
@@ -27,40 +28,47 @@ type indexItemUser struct {
 	HeadImage string `json:"head_image"`
 }
 
-//单条数据结构
-type indexItem struct {
-	Data indexItemData `json:"data"`
-	User indexItemUser `json:"user"`
+//图文单条数据结构
+type ImgTextItem struct {
+	IShowTpl string `json:"i_show_tpl"`
+	Data Content `json:"data"`
+	//User indexItemUser `json:"user"`
 }
+
+type Content struct {
+	Content itemContent `json:"content"`
+}
+
 
 type indexListData struct {
 	TotalPage int `json:"total_page"`
-	List []*indexItem `json:"list"`
+	List []*ImgTextItem `json:"list"`
 }
 
 
 func (this *IndexController) Index() {
 	o := orm.NewOrm()
 	var user_contents []*models.UserContent
-	var listData []*indexItem
+	var listData []*ImgTextItem
 	page,_ := this.GetInt("page",1)
 	total,_ := o.QueryTable(new(models.UserContent)).Count()
-	_,err := o.QueryTable(new(models.UserContent)).RelatedSel().Offset((page-1)*10).Limit(10).OrderBy("-pubtime").All(&user_contents)
+	_,err := o.QueryTable(new(models.UserContent)).Filter("user_id",this.GetUid()).Offset((page-1)*10).Limit(10).OrderBy("-pubtime").All(&user_contents)
 	if err == nil {
 		for _,data := range user_contents {
-			item := &indexItem{
-				Data:indexItemData{
+			//图文结构
+			item := &ImgTextItem{
+				IShowTpl:"imgtext_tpl",
+				Data:Content{Content:itemContent{
 					Id:data.Id,
 					Content:data.Content,
-					Imglist:Tools.HandelHeadImg(data.Imglist),
-					DateFormat:Tools.YmDateFormat(data.Pubtime),
-					TimeFormat:Tools.MdTimeFormat(data.Pubtime),
-				},
-				User:indexItemUser{
-					Uid:data.User.Id,
-					NikeName:data.User.NikeName,
-					HeadImage:data.User.HeadImg,
-				},
+					Imglist:Tools.HandelHeadImg(data.ImgList),
+					DateFormat:Tools.DateFormat(data.Pubtime),
+				}},
+				//User:indexItemUser{
+				//	Uid:data.User.Id,
+				//	NikeName:data.User.NikeName,
+				//	HeadImage:data.User.HeadImg,
+				//},
 			}
 			listData = append(listData,item)
 		}

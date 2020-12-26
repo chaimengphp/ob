@@ -17,7 +17,7 @@ type User struct {
 	OauthUid string `json:"oauth_uid"`
 	RegTime int64 `json:"reg_time"`
 	LoginTime int64 `json:"login_time"`
-	UserContents []*UserContent `orm:"reverse(many)"`
+	UserContents []*UserContent `orm:"reverse(many)",json:"user_contents"`
 }
 
 func init() {
@@ -28,15 +28,3 @@ func (u *User) TableName() string {
 	return "ob_user"
 }
 
-func Login(username, password string) bool {
-	for _, u := range UserList {
-		if u.Username == username && u.Password == password {
-			return true
-		}
-	}
-	return false
-}
-
-func DeleteUser(uid string) {
-	delete(UserList, uid)
-}
