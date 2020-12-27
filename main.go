@@ -11,7 +11,7 @@ import (
 
 func init() {
 	orm.RegisterDriver("mysql", orm.DRMySQL)
-	orm.RegisterDataBase("default","mysql","root:123456@/ob?charset=utf8")
+	orm.RegisterDataBase("default","mysql","root:pet@2020@/petdata?charset=utf8")
 	orm.Debug = true
 }
 
