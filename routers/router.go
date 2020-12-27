@@ -13,7 +13,6 @@ import (
 )
 
 func init() {
-	beego.Router("/", &controllers.WebController{}, "get:Index")
 	ns := beego.NewNamespace("/v1",
 		beego.NSRouter("/main.json",&controllers.IndexController{},"get:Index"),
 		beego.NSRouter("/detail/:id:int.json",&controllers.UserContentController{},"get:Detail"),
