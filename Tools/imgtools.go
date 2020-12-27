@@ -17,7 +17,7 @@ func HandelHeadImg(img string) []string {
 	json.Unmarshal([]byte(img),&img_list)
 	var img_list_domain []string
 	for _,img := range img_list {
-		img_url := fmt.Sprintf("https://img.com/%s",img)
+		img_url := fmt.Sprintf("http://img.wepethome.com/%s",img)
 		img_list_domain = append(img_list_domain,img_url)
 	}
 	return img_list_domain
@@ -25,7 +25,7 @@ func HandelHeadImg(img string) []string {
 
 //单张图片处理
 func HandelImg(img string) string {
-	img_url := fmt.Sprintf("https://img.com/%s",img)
+	img_url := fmt.Sprintf("http://img.wepethome.com/%s",img)
 	return img_url
 }
 
@@ -38,7 +38,7 @@ func UpImg(imgBase64 string) (imgpath string,err error) {
 	timenow := time.Now()
 
 	//定义图片目录
-	dir := "D:/go/goWork/src/obapi/image/"+timenow.Format("20060102")
+	dir := "/data/image/"+timenow.Format("20060102")
 	if _,err := os.Stat(dir);err !=nil {
 		os.MkdirAll(dir,0777)
 	}
